@@ -583,7 +583,7 @@ function renderStep3() {
         let distHtml = '';
         TOKENS.forEach((tok, i) => {
           const parts = TOKENS.map((t2, j) =>
-            `<span class="insight__highlight">${pct(DERIVED.weights[i][j])}</span> → "${t2}"`
+            `<span class="insight__highlight">${MatrixMath.pct(DERIVED.weights[i][j])}</span> → "${t2}"`
           ).join('，');
           distHtml += `<p>"<b>${tok}</b>": ${parts}</p>`;
         });
@@ -625,7 +625,7 @@ function renderStep4() {
   viz.appendChild(insightBox);
 
   const mult = new MatrixMultiplication(mc, {
-    matA: { data: DERIVED.weights, label: 'Weights', colorScheme: 'score', precision: 3, rowLabels: TOKENS },
+    matA: { data: DERIVED.weights, label: 'Weights', colorScheme: 'score', precision: 3, rowLabels: TOKENS, colLabels: TOKENS },
     matB: { data: DERIVED.V, label: 'V', colorScheme: 'value', colLabels: ['d₁', 'd₂', 'd₃', 'd₄'] },
     resultConfig: { label: 'Output', colorScheme: 'output', precision: 2 },
     speed: 350, showDetail: true, labels: getCtrlLabels()
@@ -643,13 +643,13 @@ function renderStep4() {
       bi(
         `<p>Output is <span class="insight__tag insight__tag--dim">${TOKENS.length}×${d}</span> — <b>same shape as X</b> (${TOKENS.length} tokens × d=${d}). But now each row contains <b>context-enriched</b> information:</p>
          <p>• X row for "${TOKENS[0]}" only knew about "${TOKENS[0]}" itself.</p>
-         <p>• Output row for "${TOKENS[0]}" is a <b>weighted blend</b> of ALL tokens' Values: ${TOKENS.map((t, j) => `${pct(DERIVED.weights[0][j])} from "${t}"`).join(' + ')}.</p>
-         <p>"<b>${TOKENS[maxSelfIdx]}</b>" pays <span class="insight__highlight">${pct(maxSelf)}</span> attention to itself — the highest self-attention. This means it relies mostly on its own information.</p>
+         <p>• Output row for "${TOKENS[0]}" is a <b>weighted blend</b> of ALL tokens' Values: ${TOKENS.map((t, j) => `${MatrixMath.pct(DERIVED.weights[0][j])} from "${t}"`).join(' + ')}.</p>
+         <p>"<b>${TOKENS[maxSelfIdx]}</b>" pays <span class="insight__highlight">${MatrixMath.pct(maxSelf)}</span> attention to itself — the highest self-attention. This means it relies mostly on its own information.</p>
          <p>This is the power of attention: <b>each token's output is informed by every other token</b>, with learned weights deciding how much to listen to each one. The output goes to the next layer for further processing.</p>`,
         `<p>输出为 <span class="insight__tag insight__tag--dim">${TOKENS.length}×${d}</span> — <b>与 X 形状相同</b>（${TOKENS.length} 个 token × d=${d}）。但现在每一行包含了<b>融合上下文后的信息</b>：</p>
          <p>• X 中 "${TOKENS[0]}" 那一行只知道自己的信息。</p>
-         <p>• 输出中 "${TOKENS[0]}" 那一行是所有 token 的 Value 的<b>加权混合</b>：${TOKENS.map((t, j) => `${pct(DERIVED.weights[0][j])} 来自 "${t}"`).join(' + ')}。</p>
-         <p>"<b>${TOKENS[maxSelfIdx]}</b>" 对自身的注意力为 <span class="insight__highlight">${pct(maxSelf)}</span> — 最高的自注意力。这意味着它主要依赖自己的信息。</p>
+         <p>• 输出中 "${TOKENS[0]}" 那一行是所有 token 的 Value 的<b>加权混合</b>：${TOKENS.map((t, j) => `${MatrixMath.pct(DERIVED.weights[0][j])} 来自 "${t}"`).join(' + ')}。</p>
+         <p>"<b>${TOKENS[maxSelfIdx]}</b>" 对自身的注意力为 <span class="insight__highlight">${MatrixMath.pct(maxSelf)}</span> — 最高的自注意力。这意味着它主要依赖自己的信息。</p>
          <p>这就是注意力的力量：<b>每个 token 的输出都融合了所有其他 token 的信息</b>，由学习到的权重决定"听"多少。输出将传入下一层继续处理。</p>`
       )
     ));

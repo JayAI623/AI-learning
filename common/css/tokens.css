@@ -1,0 +1,174 @@
+/* ============================================================
+   Design Tokens - "Neural Observatory" Theme
+   A scientific instrument panel aesthetic with luminous data.
+   Import this file to get the full design system.
+   ============================================================ */
+
+:root {
+  /* ---- Professional Blue Data Theme ---- */
+  --color-bg-primary: #F8FAFC;
+  --color-bg-secondary: #F1F5F9;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-elevated: #FFFFFF;
+  --color-bg-hover: #E2E8F0;
+  --color-bg-glass: rgba(248, 250, 252, 0.9);
+
+  --color-text-primary: #1E3A8A;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748B;
+  --color-text-dim: #94A3B8;
+
+  --color-border: rgba(30, 58, 138, 0.15);
+  --color-border-subtle: rgba(30, 58, 138, 0.08);
+  --color-border-glow: rgba(59, 130, 246, 0.3);
+
+  /* ---- Grid / Atmosphere ---- */
+  --color-grid-dot: rgba(30, 64, 175, 0.1);
+  --color-grid-line: rgba(59, 130, 246, 0.06);
+  --color-noise-opacity: 0.015;
+
+  /* ---- Accent Colors (professional data visualization) ---- */
+  --color-amber: #F59E0B;
+  --color-amber-soft: rgba(245, 158, 11, 0.1);
+  --color-amber-glow: rgba(245, 158, 11, 0.25);
+  --color-amber-bright: #FBBF24;
+
+  --color-cyan: #0EA5E9;
+  --color-cyan-soft: rgba(14, 165, 233, 0.1);
+  --color-cyan-glow: rgba(14, 165, 233, 0.25);
+  --color-cyan-bright: #38BDF8;
+
+  --color-violet: #8B5CF6;
+  --color-violet-soft: rgba(139, 92, 246, 0.1);
+  --color-violet-glow: rgba(139, 92, 246, 0.25);
+  --color-violet-bright: #A78BFA;
+
+  --color-rose: #F43F5E;
+  --color-rose-soft: rgba(244, 63, 94, 0.1);
+  --color-rose-glow: rgba(244, 63, 94, 0.25);
+
+  --color-emerald: #10B981;
+  --color-emerald-soft: rgba(16, 185, 129, 0.1);
+  --color-emerald-glow: rgba(16, 185, 129, 0.25);
+
+  --color-slate: #64748B;
+  --color-slate-soft: rgba(100, 116, 139, 0.08);
+
+  /* ---- Matrix Color Roles ---- */
+  --mtx-query: var(--color-amber);
+  --mtx-query-soft: var(--color-amber-soft);
+  --mtx-query-glow: var(--color-amber-glow);
+
+  --mtx-key: var(--color-cyan);
+  --mtx-key-soft: var(--color-cyan-soft);
+  --mtx-key-glow: var(--color-cyan-glow);
+
+  --mtx-value: var(--color-violet);
+  --mtx-value-soft: var(--color-violet-soft);
+  --mtx-value-glow: var(--color-violet-glow);
+
+  --mtx-score: var(--color-rose);
+  --mtx-score-soft: var(--color-rose-soft);
+  --mtx-score-glow: var(--color-rose-glow);
+
+  --mtx-output: var(--color-emerald);
+  --mtx-output-soft: var(--color-emerald-soft);
+  --mtx-output-glow: var(--color-emerald-glow);
+
+  --mtx-weight: var(--color-slate);
+  --mtx-weight-soft: var(--color-slate-soft);
+
+  /* ---- Typography ---- */
+  --font-display: 'Fira Sans', 'Inter', sans-serif;
+  --font-body: 'Fira Sans', 'Segoe UI', sans-serif;
+  --font-mono: 'Fira Code', 'Monaco', monospace;
+
+  --text-xs: 0.7rem;
+  --text-sm: 0.82rem;
+  --text-base: 0.95rem;
+  --text-lg: 1.1rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+  --text-5xl: 3.2rem;
+  --text-6xl: 4rem;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  --weight-light: 300;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.06em;
+  --tracking-wider: 0.12em;
+  --tracking-widest: 0.2em;
+
+  /* ---- Spacing ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ---- Borders & Radius ---- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+
+  /* ---- Shadows & Highlights (light theme) ---- */
+  --shadow-sm: 0 1px 2px rgba(30, 58, 138, 0.08);
+  --shadow-md: 0 4px 8px rgba(30, 58, 138, 0.1);
+  --shadow-lg: 0 12px 24px rgba(30, 58, 138, 0.12);
+  --shadow-xl: 0 20px 40px rgba(30, 58, 138, 0.15);
+  --shadow-inner: inset 0 1px 2px rgba(30, 58, 138, 0.05);
+  --shadow-glow-amber: 0 0 20px rgba(245, 158, 11, 0.2), 0 0 40px rgba(245, 158, 11, 0.08);
+  --shadow-glow-cyan: 0 0 20px rgba(14, 165, 233, 0.2), 0 0 40px rgba(14, 165, 233, 0.08);
+  --shadow-glow-violet: 0 0 20px rgba(139, 92, 246, 0.2), 0 0 40px rgba(139, 92, 246, 0.08);
+
+  /* ---- Transitions (optimized for data UI) ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-expo: cubic-bezier(0.7, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 600ms;
+
+  /* ---- Matrix Cell Sizing ---- */
+  --mtx-cell-size: 54px;
+  --mtx-cell-gap: 3px;
+  --mtx-cell-font-size: var(--text-sm);
+  --mtx-bracket-width: 5px;
+  --mtx-bracket-color: currentColor;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --mtx-cell-size: 42px;
+    --mtx-cell-font-size: var(--text-xs);
+    --text-5xl: 2.2rem;
+    --text-6xl: 2.8rem;
+    --text-4xl: 1.8rem;
+  }
+}

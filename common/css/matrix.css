@@ -1,0 +1,520 @@
+/* ============================================================
+   Matrix Component - Reusable Styles
+   Vivid color scheme, dramatic row/col highlighting.
+   ============================================================ */
+
+/* ---- Matrix Wrapper ---- */
+.mtx {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  --_mtx-accent: var(--color-text-secondary);
+  --_mtx-accent-soft: var(--color-slate-soft);
+  --_mtx-accent-glow: transparent;
+  --_mtx-cell-bg: var(--color-bg-surface);
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.mtx:hover { transform: translateY(-2px); }
+
+/* ---- Color Schemes with vivid cell tints ---- */
+.mtx--query {
+  --_mtx-accent: var(--mtx-query);
+  --_mtx-accent-soft: var(--mtx-query-soft);
+  --_mtx-accent-glow: var(--mtx-query-glow);
+  --_mtx-cell-bg: rgba(232, 168, 56, 0.07);
+}
+.mtx--key {
+  --_mtx-accent: var(--mtx-key);
+  --_mtx-accent-soft: var(--mtx-key-soft);
+  --_mtx-accent-glow: var(--mtx-key-glow);
+  --_mtx-cell-bg: rgba(34, 211, 238, 0.06);
+}
+.mtx--value {
+  --_mtx-accent: var(--mtx-value);
+  --_mtx-accent-soft: var(--mtx-value-soft);
+  --_mtx-accent-glow: var(--mtx-value-glow);
+  --_mtx-cell-bg: rgba(167, 139, 250, 0.06);
+}
+.mtx--score {
+  --_mtx-accent: var(--mtx-score);
+  --_mtx-accent-soft: var(--mtx-score-soft);
+  --_mtx-accent-glow: var(--mtx-score-glow);
+  --_mtx-cell-bg: rgba(251, 113, 133, 0.06);
+}
+.mtx--output {
+  --_mtx-accent: var(--mtx-output);
+  --_mtx-accent-soft: var(--mtx-output-soft);
+  --_mtx-accent-glow: var(--mtx-output-glow);
+  --_mtx-cell-bg: rgba(52, 211, 153, 0.06);
+}
+.mtx--weight {
+  --_mtx-accent: var(--mtx-weight);
+  --_mtx-accent-soft: var(--mtx-weight-soft);
+  --_mtx-accent-glow: transparent;
+  --_mtx-cell-bg: rgba(139, 155, 192, 0.04);
+}
+
+/* ---- Matrix Label ---- */
+.mtx-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  color: var(--_mtx-accent);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  user-select: none;
+  text-shadow: 0 0 20px var(--_mtx-accent-glow);
+}
+
+.mtx-label sup { font-size: 0.6em; vertical-align: super; }
+
+/* ---- Matrix Body ---- */
+.mtx-body {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  position: relative;
+}
+
+/* ---- Brackets: vivid accent color ---- */
+.mtx-bracket {
+  width: var(--mtx-bracket-width);
+  min-height: 100%;
+  border: 2px solid var(--_mtx-accent);
+  opacity: 0.5;
+  flex-shrink: 0;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.mtx:hover .mtx-bracket { opacity: 0.9; }
+
+.mtx-bracket--left {
+  border-right: none;
+  border-radius: 3px 0 0 3px;
+  margin-right: 3px;
+}
+
+.mtx-bracket--right {
+  border-left: none;
+  border-radius: 0 3px 3px 0;
+  margin-left: 3px;
+}
+
+/* ---- Grid ---- */
+.mtx-grid { display: grid; gap: var(--mtx-cell-gap); }
+
+/* ---- Cell: tinted with accent color ---- */
+.mtx-cell {
+  width: var(--mtx-cell-size);
+  height: var(--mtx-cell-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--mtx-cell-font-size);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  background: var(--_mtx-cell-bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition:
+    background var(--duration-normal) var(--ease-out),
+    border-color var(--duration-normal) var(--ease-out),
+    transform var(--duration-fast) var(--ease-spring),
+    box-shadow var(--duration-normal) var(--ease-out),
+    color var(--duration-normal) var(--ease-out);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+}
+
+.mtx-cell:hover {
+  border-color: var(--_mtx-accent);
+  background: var(--color-bg-elevated);
+  z-index: 1;
+  box-shadow: 0 0 8px var(--_mtx-accent-glow);
+}
+
+/* ======== Cell Highlight States (dramatic) ======== */
+
+/* Row highlight during multiplication: strong left/right border + bright bg */
+.mtx-cell--highlight-row {
+  background: var(--_mtx-accent-soft) !important;
+  border-color: var(--_mtx-accent) !important;
+  color: var(--_mtx-accent) !important;
+  font-weight: var(--weight-bold) !important;
+  box-shadow: inset 3px 0 0 var(--_mtx-accent), inset -3px 0 0 var(--_mtx-accent);
+  z-index: 2;
+}
+
+/* Column highlight: strong top/bottom border + bright bg */
+.mtx-cell--highlight-col {
+  background: var(--_mtx-accent-soft) !important;
+  border-color: var(--_mtx-accent) !important;
+  color: var(--_mtx-accent) !important;
+  font-weight: var(--weight-bold) !important;
+  box-shadow: inset 0 3px 0 var(--_mtx-accent), inset 0 -3px 0 var(--_mtx-accent);
+  z-index: 2;
+}
+
+/* Active cell (result being computed): pulse glow */
+.mtx-cell--active {
+  background: var(--_mtx-accent-glow) !important;
+  border-color: var(--_mtx-accent) !important;
+  color: #fff !important;
+  font-weight: var(--weight-bold) !important;
+  box-shadow: 0 0 20px var(--_mtx-accent-glow), 0 0 6px var(--_mtx-accent-glow) !important;
+  transform: scale(1.15);
+  z-index: 4;
+  animation: cell-pulse 0.6s ease-in-out infinite;
+}
+
+@keyframes cell-pulse {
+  0%, 100% { box-shadow: 0 0 16px var(--_mtx-accent-glow), 0 0 4px var(--_mtx-accent-glow); }
+  50%      { box-shadow: 0 0 28px var(--_mtx-accent-glow), 0 0 10px var(--_mtx-accent-glow); }
+}
+
+/* Newly computed cell: pop in */
+.mtx-cell--computed {
+  animation: mtx-cell-pop 0.45s var(--ease-spring) forwards;
+}
+
+@keyframes mtx-cell-pop {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+    background: var(--_mtx-accent-glow);
+    box-shadow: 0 0 24px var(--_mtx-accent-glow);
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    background: var(--_mtx-accent-soft);
+    border-color: var(--_mtx-accent);
+    box-shadow: 0 0 6px var(--_mtx-accent-glow);
+  }
+}
+
+/* Empty cell */
+.mtx-cell--empty {
+  color: var(--color-text-dim);
+  background: rgba(255,255,255,0.02);
+  font-style: normal;
+  font-size: var(--text-xs);
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+/* Editable cell */
+.mtx-cell--editable {
+  cursor: text;
+  border-color: rgba(255,255,255,0.1);
+}
+
+.mtx-cell--editable:hover {
+  border-color: var(--_mtx-accent);
+  background: var(--color-bg-elevated);
+}
+
+.mtx-cell--editable:focus-within {
+  border-color: var(--_mtx-accent);
+  box-shadow: 0 0 0 2px var(--_mtx-accent-soft), 0 0 12px var(--_mtx-accent-glow);
+  outline: none;
+}
+
+.mtx-cell input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  outline: none;
+  padding: 0;
+}
+
+/* Heatmap */
+.mtx-cell--heat {
+  transition: background-color var(--duration-slow) var(--ease-out);
+}
+
+/* ---- Row / Column Labels ---- */
+.mtx-row-labels, .mtx-col-labels {
+  display: flex;
+  gap: var(--mtx-cell-gap);
+}
+
+.mtx-row-labels { flex-direction: column; margin-right: var(--space-2); }
+.mtx-col-labels { margin-bottom: var(--space-1); }
+
+.mtx-row-label, .mtx-col-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  width: var(--mtx-cell-size);
+  height: var(--mtx-cell-size);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: var(--tracking-wide);
+}
+
+.mtx-row-label {
+  width: auto;
+  padding-right: var(--space-2);
+  min-width: 28px;
+}
+
+/* ---- Annotation / Dims ---- */
+.mtx-annotation {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-text-dim);
+  text-align: center;
+  margin-top: var(--space-2);
+  letter-spacing: var(--tracking-wide);
+}
+
+.mtx-dims {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--color-text-dim);
+  opacity: 0.5;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ============================================================
+   Matrix Multiplication Layout
+   ============================================================ */
+.mtx-multiply {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.mtx-multiply__op {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  color: var(--color-text-dim);
+  font-weight: var(--weight-light);
+  user-select: none;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* ---- Calculation Detail ---- */
+.mtx-detail {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4) var(--space-6);
+  margin-top: var(--space-8);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-inner);
+}
+
+.mtx-detail__terms {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+.mtx-detail__term {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px var(--space-2);
+  border-radius: var(--radius-sm);
+  animation: mtx-term-in 0.35s var(--ease-spring) forwards;
+  opacity: 0;
+}
+
+@keyframes mtx-term-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.85); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.mtx-detail__term--a {
+  background: rgba(232, 168, 56, 0.2);
+  color: var(--color-amber-bright);
+  border: 1px solid rgba(232, 168, 56, 0.3);
+  font-weight: var(--weight-bold);
+}
+
+.mtx-detail__term--b {
+  background: rgba(34, 211, 238, 0.15);
+  color: var(--color-cyan-bright);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  font-weight: var(--weight-bold);
+}
+
+.mtx-detail__term--result {
+  background: rgba(52, 211, 153, 0.18);
+  color: var(--color-emerald);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-base);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  text-shadow: 0 0 10px var(--color-emerald-glow);
+}
+
+.mtx-detail__plus { color: var(--color-text-dim); font-size: var(--text-xs); }
+.mtx-detail__equals { color: var(--color-text-muted); font-size: var(--text-lg); margin: 0 var(--space-1); }
+
+/* ---- Controls ---- */
+.mtx-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.mtx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 10px var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  user-select: none;
+  white-space: nowrap;
+  box-shadow: var(--shadow-inner);
+}
+
+.mtx-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-text-dim);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.mtx-btn:active { transform: translateY(0); }
+
+.mtx-btn--primary {
+  background: linear-gradient(135deg, var(--color-amber), #d97706);
+  border-color: var(--color-amber);
+  color: #0f172a;
+  font-weight: var(--weight-bold);
+  box-shadow: var(--shadow-inner), 0 2px 16px rgba(245, 158, 11, 0.3);
+}
+
+.mtx-btn--primary:hover {
+  background: linear-gradient(135deg, var(--color-amber-bright), var(--color-amber));
+  border-color: var(--color-amber-bright);
+  box-shadow: var(--shadow-glow-amber);
+  transform: translateY(-2px);
+}
+
+.mtx-btn--sm { padding: var(--space-1) var(--space-3); font-size: var(--text-xs); }
+.mtx-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
+.mtx-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+/* ---- Speed Control ---- */
+.mtx-speed {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-dim);
+  letter-spacing: var(--tracking-wide);
+}
+
+.mtx-speed input[type="range"] {
+  width: 70px;
+  height: 4px;
+  accent-color: var(--color-amber);
+  cursor: pointer;
+}
+
+/* ---- Progress ---- */
+.mtx-progress {
+  width: 100%;
+  height: 3px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: var(--space-3);
+}
+
+.mtx-progress__bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-amber), var(--color-amber-bright));
+  border-radius: var(--radius-full);
+  transition: width var(--duration-normal) var(--ease-out);
+  box-shadow: 0 0 8px var(--color-amber-glow);
+}
+
+/* ============================================================
+   Utility Classes — Reusable layout & sizing helpers
+   Replace inline JS styles with declarative CSS.
+   ============================================================ */
+
+/* ---- Matrix Size Variants ---- */
+.mtx-size--sm  { --mtx-cell-size: 36px; --mtx-cell-font-size: 0.6rem;  }
+.mtx-size--md  { --mtx-cell-size: 42px; --mtx-cell-font-size: 0.65rem; }
+.mtx-size--lg  { --mtx-cell-size: 54px; --mtx-cell-font-size: var(--text-sm); }
+
+/* ---- Layout Helpers ---- */
+.mtx-center {
+  display: flex;
+  justify-content: center;
+}
+.mtx-center--mt { margin-top: 8px; }
+.mtx-center--mb { margin-bottom: 16px; }
+
+.mtx-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ---- Detail Term Pill (move from inline JS styles) ---- */
+.mtx-detail__term-val {
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ---- Hint / Complete Text ---- */
+.mtx-detail__hint {
+  color: var(--color-text-dim);
+}
+.mtx-detail__complete {
+  color: var(--color-emerald);
+}
+
+/* Heatmap cell stagger animation is now defined directly
+   in page.css .heatmap__cell — no separate override needed. */

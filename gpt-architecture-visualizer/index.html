@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPT Architecture Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../common/css/tokens.css">
+  <link rel="stylesheet" href="../common/css/page.css">
+  <link rel="stylesheet" href="../common/css/matrix.css">
+  <link rel="stylesheet" href="css/page.css">
+</head>
+<body>
+  <div class="page">
+    <!-- Top bar: back link + lang toggle -->
+    <div class="top-bar">
+      <a href="../index.html" class="back-link" aria-label="Back to home">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        <span data-i18n="back">返回</span>
+      </a>
+      <button class="lang-toggle" id="langToggle" aria-label="Toggle language">中文 / EN</button>
+    </div>
+
+    <header class="page-header">
+      <h1 class="page-title" data-i18n="title">GPT 架构可视化</h1>
+      <p class="page-subtitle" data-i18n="subtitle">
+        点击每个模块，查看其矩阵级计算流程。Transformer 层以不同权重重复 N 次。
+      </p>
+    </header>
+
+    <section class="arch-card">
+      <div class="arch-track" aria-label="GPT architecture">
+
+        <button class="arch-node arch-node--blue is-active" data-module="token-embedding">
+          <span class="arch-node__title">Tok<br>Embed</span>
+        </button>
+        <span class="arch-arrow" aria-hidden="true">→</span>
+
+        <button class="arch-node arch-node--pink" data-module="position-embedding">
+          <span class="arch-node__title">Pos<br>Embed</span>
+        </button>
+        <span class="arch-arrow" aria-hidden="true">→</span>
+
+        <div class="layer-box">
+          <span class="layer-box__tag" data-i18n="layerTag">Transformer 层</span>
+          <div class="layer-box__blocks">
+            <button class="layer-block layer-block--blue" data-module="self-attn">
+              <span class="layer-block__label">Attn</span>
+            </button>
+            <button class="layer-block layer-block--green" data-module="add-norm-1">
+              <span class="layer-block__label">A+N</span>
+            </button>
+            <button class="layer-block layer-block--pink" data-module="ffn">
+              <span class="layer-block__label">FFN</span>
+            </button>
+            <button class="layer-block layer-block--green" data-module="add-norm-2">
+              <span class="layer-block__label">A+N</span>
+            </button>
+          </div>
+          <span class="layer-box__repeat">×N</span>
+        </div>
+
+        <span class="arch-arrow" aria-hidden="true">→</span>
+
+        <button class="arch-node arch-node--blue" data-module="lm-head">
+          <span class="arch-node__title">LM<br>Head</span>
+        </button>
+        <span class="arch-arrow" aria-hidden="true">→</span>
+
+        <button class="arch-node arch-node--pink" data-module="softmax">
+          <span class="arch-node__title">Soft-<br>max</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Step Control — autoregressive sequence progression -->
+    <div class="step-bar" id="stepBar">
+      <div class="step-sequence" id="stepSequence"></div>
+      <div class="step-nav">
+        <button class="step-btn" id="stepPrev" disabled aria-label="Previous step">
+          <svg viewBox="0 0 24 24" width="14" height="14"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor"/></svg>
+          <span data-i18n="prev">上一步</span>
+        </button>
+        <span class="step-label" id="stepLabel"></span>
+        <button class="step-btn" id="stepNext" aria-label="Next step">
+          <span data-i18n="next">下一步</span>
+          <svg viewBox="0 0 24 24" width="14" height="14"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <section class="detail-card" aria-live="polite">
+      <div class="detail-head">
+        <div>
+          <p class="detail-kicker" id="detailKicker"></p>
+          <h2 class="detail-title" id="detailTitle"></h2>
+          <p class="detail-desc" id="detailDesc"></p>
+        </div>
+        <p class="detail-tip" data-i18n="detailTip">点击上方模块探索</p>
+      </div>
+
+      <div class="detail-meta">
+        <div>
+          <h3 data-i18n="formula">公式</h3>
+          <div id="formulaRow" class="formula-row"></div>
+        </div>
+        <div>
+          <h3 data-i18n="dimensions">维度</h3>
+          <div id="dimRow" class="dim-row"></div>
+        </div>
+      </div>
+
+      <div class="detail-flow">
+        <h3 data-i18n="computationFlow">计算流程</h3>
+        <ol id="flowList"></ol>
+      </div>
+
+      <div class="detail-demo">
+        <h3 data-i18n="matrixDemo">矩阵演示</h3>
+        <div id="matrixDemo"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../common/js/i18n.js"></script>
+  <script src="../common/js/resource-manager.js"></script>
+  <script src="../common/js/dom-utils.js"></script>
+  <script src="../common/js/matrix.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

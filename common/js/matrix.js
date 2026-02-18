@@ -189,8 +189,7 @@ class MatrixComponent {
   }
 
   _formatLabel(label) {
-    // Support superscript: K^T -> K<sup>T</sup>
-    return label.replace(/\^(\w+)/g, '<sup>$1</sup>');
+    return formatNotation(label);
   }
 
   /* ---- Public API ---- */
@@ -645,8 +644,8 @@ class StepAnimator {
     spd.innerHTML = `<span>${this.labels.speed}</span>`;
     const slider = document.createElement('input');
     slider.type = 'range'; slider.min = '30'; slider.max = '300';
-    slider.value = String(this.speed);
-    slider.addEventListener('input', () => { this.speed = parseInt(slider.value); });
+    slider.value = String(330 - this.speed);
+    slider.addEventListener('input', () => { this.speed = 330 - parseInt(slider.value); });
     spd.appendChild(slider);
     ctrls.appendChild(spd);
 

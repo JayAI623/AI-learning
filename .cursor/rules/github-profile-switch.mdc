@@ -1,0 +1,50 @@
+---
+description: Switch between GitHub profiles (work/personal). Changes git user.name, user.email, github.user, and gh CLI active account.
+globs:
+alwaysApply: false
+---
+
+# GitHub Profile Switch
+
+Quickly switch between pre-configured GitHub profiles (git config + gh CLI auth).
+
+**Trigger**: "switch profile", "switch to personal", "switch to work", "change github account", "use personal github", "use work github", "切换 profile", "切换到个人", "切换到工作"
+
+## Profiles
+
+### Work (default)
+- **git user.name**: `JayLiuMLP`
+- **git user.email**: `zhe.liu@doordash.com`
+- **github.user**: `jayliumlp`
+- **gh account**: `JayLiuMLP` (GITHUB_TOKEN)
+
+### Personal
+- **git user.name**: `JayAI623`
+- **git user.email**: (from `~/.gitconfig-personal`)
+- **github.user**: `JayAI623`
+- **gh account**: `JayLiuMLP` (keyring) or dedicated personal token
+
+## Switch to Personal
+```bash
+git config --global user.name "JayAI623"
+git config --global user.email "$(git config --file ~/.gitconfig-personal user.email)"
+git config --global github.user "JayAI623"
+gh auth switch --user JayAI623 2>/dev/null || echo "No separate gh account for JayAI623; using token-based auth"
+# Verify
+git config --global user.name && git config --global user.email && gh auth status
+```
+
+## Switch to Work
+```bash
+git config --global user.name "JayLiuMLP"
+git config --global user.email "zhe.liu@doordash.com"
+git config --global github.user "jayliumlp"
+gh auth switch --user JayLiuMLP 2>/dev/null || echo "Already on work account"
+# Verify
+git config --global user.name && git config --global user.email && gh auth status
+```
+
+## Behavior
+1. If user says "switch profile" without specifying which, show current profile and ask which to switch to.
+2. After switching, always run the verify step and show the result.
+3. `~/.gitconfig` `includeIf` rules still apply per-directory overrides.

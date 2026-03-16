@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KV Cache Test</title>
+  <script>
+    // Simple test to verify the page loads correctly
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('✅ Page loaded');
+
+      // Check if viz areas exist
+      const vizAreas = document.querySelectorAll('.viz-area');
+      console.log(`✅ Found ${vizAreas.length} viz-area elements`);
+
+      // Check if scripts loaded
+      if (typeof I18n !== 'undefined') {
+        console.log('✅ I18n class loaded');
+      } else {
+        console.error('❌ I18n class NOT loaded');
+      }
+
+      // Wait for initialization
+      setTimeout(() => {
+        const viz1 = document.getElementById('viz-step1');
+        if (viz1 && viz1.children.length > 0) {
+          console.log(`✅ Stage 1 rendered with ${viz1.children.length} elements`);
+        } else {
+          console.error('❌ Stage 1 NOT rendered');
+        }
+      }, 1000);
+    });
+  </script>
+</head>
+<body>
+  <h1>Open Console (F12) and then visit:</h1>
+  <a href="http://localhost:8080/kv-cache-visualizer/" target="_blank" style="font-size: 24px;">
+    http://localhost:8080/kv-cache-visualizer/
+  </a>
+</body>
+</html>

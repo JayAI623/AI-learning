@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KV Cache — Interactive Visualizer</title>
+  <meta name="description" content="Step-by-step interactive visualization of KV Cache optimization via QKV computation and attention score/mask.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../common/css/tokens.css">
+  <link rel="stylesheet" href="../common/css/matrix.css">
+  <link rel="stylesheet" href="css/page.css">
+</head>
+<body>
+
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <button id="lang-toggle" class="lang-toggle" title="Switch Language" aria-label="Toggle language">EN</button>
+
+  <div class="page-container">
+
+    <!-- Hero -->
+    <header class="hero">
+      <p class="hero__eyebrow" data-i18n="hero.eyebrow">Inference Optimization</p>
+      <h1 class="hero__title" data-i18n-html="hero.title">KV Cache: <em>QKV + Mask</em> View</h1>
+      <p class="hero__subtitle" data-i18n="hero.subtitle">Understand KV cache by tracking Q/K/V projections and attention score/mask computation step-by-step.</p>
+      <div class="hero__divider" aria-hidden="true"></div>
+    </header>
+
+    <!-- Stage 1: QKV Projection Comparison -->
+    <section class="stage" id="stage-1" data-stage="1">
+      <div class="stage__header">
+        <span class="stage__number">1</span>
+        <div>
+          <h2 class="stage__title" data-i18n="step1.title">Q/K/V Computation Per Decode Step</h2>
+          <p class="stage__desc" data-i18n-html="step1.desc">At decode step <code>t</code>: without cache, recompute <code>Q,K,V</code> for all <code>1..t</code> tokens. With cache, compute only <code>q_t,k_t,v_t</code> and reuse historical <code>K,V</code>.</p>
+        </div>
+      </div>
+      <div class="viz-area" id="viz-step1"></div>
+      <div class="callout">
+        <span class="callout__icon">🚀</span>
+        <p data-i18n="step1.callout">Compute savings come from removing repeated K/V projections on history.</p>
+      </div>
+    </section>
+
+    <!-- Stage 2: Attention Scores + Causal Mask -->
+    <section class="stage" id="stage-2" data-stage="2">
+      <div class="stage__header">
+        <span class="stage__number">2</span>
+        <div>
+          <h2 class="stage__title" data-i18n="step2.title">Attention Scores + Causal Mask</h2>
+          <p class="stage__desc" data-i18n-html="step2.desc">Without cache, naive recomputation forms full <code>t×t</code> scores and applies mask to all rows. With cache, decoding needs only the last row: <code>q_t · K_{1:t}^T + mask_t</code>.</p>
+        </div>
+      </div>
+      <div class="viz-area" id="viz-step2"></div>
+      <div class="callout">
+        <span class="callout__icon">⚡</span>
+        <p data-i18n="step2.callout">Generation uses the current token output, so only the last attention row is required.</p>
+      </div>
+    </section>
+
+    <!-- Stage 3: What KV Cache Stores -->
+    <section class="stage" id="stage-3" data-stage="3">
+      <div class="stage__header">
+        <span class="stage__number">3</span>
+        <div>
+          <h2 class="stage__title" data-i18n="step3.title">What KV Cache Stores</h2>
+          <p class="stage__desc" data-i18n-html="step3.desc">Cache keeps historical <code>K</code> and <code>V</code> only. Each new token appends one K-row and one V-row.</p>
+        </div>
+      </div>
+      <div class="viz-area" id="viz-step3"></div>
+      <div class="callout">
+        <span class="callout__icon">📦</span>
+        <p data-i18n="step3.callout">Per layer, per head: K,V with shape [batch, heads, seq_len, head_dim].</p>
+      </div>
+    </section>
+
+    <!-- Stage 4: Why Not Cache Q -->
+    <section class="stage" id="stage-4" data-stage="4">
+      <div class="stage__header">
+        <span class="stage__number">4</span>
+        <div>
+          <h2 class="stage__title" data-i18n="step4.title">Why Not Cache Q?</h2>
+          <p class="stage__desc" data-i18n-html="step4.desc">Past <code>Q</code> vectors are not queried again in future decoding steps. Future steps repeatedly read past <code>K,V</code>, not past <code>Q</code>.</p>
+        </div>
+      </div>
+      <div class="viz-area" id="viz-step4"></div>
+      <div class="callout">
+        <span class="callout__icon">💡</span>
+        <p data-i18n="step4.callout">Cache what has future reuse: K/V yes, Q no.</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+      <p data-i18n="footer.text">Interactive KV Cache Visualizer — Q/K/V and attention-mask based explanation</p>
+      <p style="margin-top: 8px; font-size: 0.65rem;">
+        <a href="../attention-visualizer/index.html" style="color: var(--color-amber); text-decoration: none;">← Back to Attention Mechanism</a>
+      </p>
+    </footer>
+
+  </div>
+
+  <script src="../common/js/matrix.js"></script>
+  <script src="../common/js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -54,6 +54,17 @@
   --color-slate: #64748B;
   --color-slate-soft: rgba(100, 116, 139, 0.08);
 
+  /* ---- Pastel Block Colors (architecture diagrams) ---- */
+  --color-pastel-blue: #93c5fd;
+  --color-pastel-pink: #fbcfe8;
+  --color-pastel-yellow: #fde68a;
+  --color-pastel-green: #86efac;
+
+  /* ---- Semantic Dark Text (on light / pastel backgrounds) ---- */
+  --color-text-on-light: #0f172a;
+  --color-text-on-light-muted: #334155;
+  --color-link-accent: #0284c7;
+
   /* ---- Matrix Color Roles ---- */
   --mtx-query: var(--color-amber);
   --mtx-query-soft: var(--color-amber-soft);

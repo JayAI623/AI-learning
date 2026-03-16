@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOE — Mixture of Experts Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../common/css/tokens.css">
+  <link rel="stylesheet" href="../common/css/page.css">
+  <link rel="stylesheet" href="css/page.css">
+</head>
+<body>
+  <div class="page">
+    <a href="../index.html" class="back-link" aria-label="Back to home">
+      <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      <span>返回</span>
+    </a>
+
+    <header class="page-header">
+      <h1 class="page-title" data-i18n="title">Mixture of Experts 可视化</h1>
+      <p class="page-subtitle" data-i18n="subtitle">理解 MOE 如何通过稀疏激活实现"用更多参数、花更少算力"的高效推理。</p>
+    </header>
+
+    <!-- Sticky Step Navigator -->
+    <nav class="step-nav" aria-label="Step navigation">
+      <div class="step-nav__info">
+        <div class="step-nav__badge">
+          <span data-i18n="stepLabel">步骤</span>
+          <strong id="stepValue">1</strong> / 4
+        </div>
+        <span class="step-nav__title" id="stepTitle" data-i18n="step1Nav">架构概览</span>
+      </div>
+      <div class="step-nav__actions">
+        <button class="step-btn" id="prevBtn" disabled>← <span data-i18n="prev">上一步</span></button>
+        <button class="step-btn step-btn--primary" id="nextBtn"><span data-i18n="next">下一步</span> →</button>
+        <button class="lang-toggle" id="langToggle">中文 / EN</button>
+      </div>
+    </nav>
+
+    <!-- ═══════════ Step 1: What is MOE? ═══════════ -->
+    <section class="section-card" id="step1" aria-labelledby="s1Title">
+      <div class="section-card__header">
+        <div class="section-card__icon section-card__icon--amber">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        </div>
+        <h2 class="section-card__title" id="s1Title" data-i18n="s1Title">什么是 Mixture of Experts？</h2>
+      </div>
+      <p class="section-card__desc" data-i18n="s1Desc">在标准 Transformer 中，每个 token 都要经过同一个巨大的 FFN 层。MOE 的核心思想：<strong>把一个大 FFN 拆成多个小"专家"，每个 token 只激活其中几个</strong>。</p>
+
+      <div class="arch-compare">
+        <!-- Dense Model -->
+        <div class="arch-col">
+          <div class="arch-label" data-i18n="denseModel">Dense 模型</div>
+          <div class="arch-diagram">
+            <div class="arch-block arch-block--input">Token x</div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-block arch-block--attn">Self-Attention</div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-block arch-block--ffn arch-block--full">
+              <div class="arch-block__label">FFN</div>
+              <div class="arch-block__detail" data-i18n="allNeurons">所有神经元都参与计算</div>
+              <div class="neuron-grid">
+                <span class="neuron neuron--active"></span>
+                <span class="neuron neuron--active"></span>
+                <span class="neuron neuron--active"></span>
+                <span class="neuron neuron--active"></span>
+                <span class="neuron neuron--active"></span>
+                <span class="neuron neuron--active"></span>
+                <span class="neuron neuron--active"></span>
+                <span class="neuron neuron--active"></span>
+              </div>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-block arch-block--output">Output</div>
+          </div>
+        </div>
+
+        <!-- VS Divider -->
+        <div class="arch-vs">
+          <div class="arch-vs__line"></div>
+          <span class="arch-vs__text">VS</span>
+          <div class="arch-vs__line"></div>
+        </div>
+
+        <!-- MOE Model -->
+        <div class="arch-col">
+          <div class="arch-label arch-label--moe" data-i18n="moeModel">MOE 模型</div>
+          <div class="arch-diagram">
+            <div class="arch-block arch-block--input">Token x</div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-block arch-block--attn">Self-Attention</div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-block arch-block--router">
+              <div class="arch-block__label">Router</div>
+              <div class="arch-block__detail">G(x) = softmax(x · W<sub>g</sub>)</div>
+            </div>
+            <div class="arch-arrow-fan">
+              <svg viewBox="0 0 240 40" class="fan-svg">
+                <path d="M120 0 L30 38" stroke="var(--color-text-dim)" stroke-width="1.5" fill="none" stroke-dasharray="4 3" opacity="0.3"/>
+                <path d="M120 0 L70 38" stroke="var(--color-emerald)" stroke-width="2" fill="none"/>
+                <path d="M120 0 L110 38" stroke="var(--color-text-dim)" stroke-width="1.5" fill="none" stroke-dasharray="4 3" opacity="0.3"/>
+                <path d="M120 0 L150 38" stroke="var(--color-text-dim)" stroke-width="1.5" fill="none" stroke-dasharray="4 3" opacity="0.3"/>
+                <path d="M120 0 L190 38" stroke="var(--color-violet)" stroke-width="2" fill="none"/>
+                <path d="M120 0 L210 38" stroke="var(--color-text-dim)" stroke-width="1.5" fill="none" stroke-dasharray="4 3" opacity="0.3"/>
+              </svg>
+            </div>
+            <div class="expert-row">
+              <div class="expert-block expert-block--dim">E1</div>
+              <div class="expert-block expert-block--active expert-block--emerald">E2</div>
+              <div class="expert-block expert-block--dim">E3</div>
+              <div class="expert-block expert-block--dim">E4</div>
+              <div class="expert-block expert-block--active expert-block--violet">E5</div>
+              <div class="expert-block expert-block--dim">E6</div>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-block arch-block--output">
+              <span class="weight-label">0.6·y₂ + 0.4·y₅</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-box" data-i18n="s1Insight">
+        <strong>核心洞察：</strong>Attention 层完全相同，区别只在 FFN 层。Dense 模型激活所有参数，MOE 只激活被选中的专家——用更大容量换更低计算量。
+      </div>
+    </section>
+
+    <!-- ═══════════ Step 2: How the Router Works ═══════════ -->
+    <section class="section-card" id="step2" style="display:none;" aria-labelledby="s2Title">
+      <div class="section-card__header">
+        <div class="section-card__icon section-card__icon--cyan">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg>
+        </div>
+        <h2 class="section-card__title" id="s2Title" data-i18n="s2Title">路由器如何选择专家？</h2>
+      </div>
+      <p class="section-card__desc" data-i18n="s2Desc">点击 Play 观看每个 token 依次通过路由器的过程，或点击单个 token 查看其路由详情。注意不同类型的 token 会路由到不同的专家。</p>
+
+      <div class="flow-controls">
+        <button class="step-btn step-btn--primary" id="stepRouterBtn" data-i18n="stepRouter">下一个 Token →</button>
+        <button class="step-btn" id="resetRouterBtn" data-i18n="resetRouter">↻ 重置</button>
+        <span class="flow-controls__counter" id="routerCounter">0 / 7</span>
+      </div>
+
+      <!-- Routing Sankey Diagram: tokens → experts -->
+      <div class="routing-map" id="routingMap">
+        <div class="routing-map__tokens" id="rmTokens"></div>
+        <svg class="routing-map__svg" id="rmSvg" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="routing-map__experts" id="rmExperts"></div>
+      </div>
+
+      <!-- Score Bars Detail (per-token) -->
+      <div class="router-detail" id="routerDetail">
+        <div class="router-detail__header">
+          <span class="router-detail__token" id="detailTokenLabel">"The"</span>
+          <span class="router-detail__formula">G(x) = softmax(x · W<sub>g</sub>)</span>
+        </div>
+        <div class="score-bars" id="scoreBars"></div>
+        <div class="expert-output-row" id="expertOutputRow"></div>
+      </div>
+
+      <div class="insight-box" data-i18n="s2Insight">
+        <strong>发现：</strong>路由决策主要基于 token 本身的类型（如标点、名词、动词），而非上下文语义。注意 "The" 和 "the" 路由到几乎相同的专家——专家分工在训练早期就基本固定了。
+      </div>
+    </section>
+
+    <!-- ═══════════ Step 3: Dense vs MOE Token Flow ═══════════ -->
+    <section class="section-card" id="step3" style="display:none;" aria-labelledby="s3Title">
+      <div class="section-card__header">
+        <div class="section-card__icon section-card__icon--violet">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        </div>
+        <h2 class="section-card__title" id="s3Title" data-i18n="s3Title">Token 路由全流程对比</h2>
+      </div>
+      <p class="section-card__desc" data-i18n="s3Desc">MLP 由两层矩阵乘法组成（上投影 + 下投影）。Dense 和 MOE 的总参数量相同，但 MOE 每次只激活 Top-K 个专家，大幅节省计算。</p>
+
+      <div class="flow-controls">
+        <button class="step-btn step-btn--primary" id="stepFlowBtn" data-i18n="stepFlow">下一步 →</button>
+        <button class="step-btn" id="resetFlowBtn" data-i18n="resetFlow">↻ 重置</button>
+        <span class="flow-controls__counter" id="flowCounter">0 / 7</span>
+      </div>
+
+      <div class="flow-compare">
+        <!-- Dense Column -->
+        <div class="flow-col">
+          <div class="flow-col__title" data-i18n="denseFlow">Dense 模型</div>
+          <div class="flow-diagram" id="denseFlow">
+            <div class="flow-node flow-node--token" data-step="0">
+              <span class="flow-node__text">"cat" → x ∈ ℝ<sup>d</sup></span>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node--attn" data-step="1">
+              <span class="flow-node__text">Self-Attention</span>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node--add" data-step="2">
+              <span class="flow-node__text">Add & Norm</span>
+            </div>
+            <div class="flow-connector"></div>
+
+            <!-- Dense MLP: two layers with full dimensions -->
+            <div class="flow-node flow-node--ffn flow-node--ffn-dense" data-step="3">
+              <span class="flow-node__label">MLP (Feed-Forward)</span>
+              <!-- Layer 1: Up-projection -->
+              <div class="mlp-layer">
+                <div class="mlp-layer__label" data-i18n="upProj">上投影</div>
+                <div class="mlp-layer__matrix">
+                  <span class="mlp-dim">x ∈ ℝ<sup>d</sup></span>
+                  <span class="mlp-times">×</span>
+                  <span class="mlp-weight">W<sub>up</sub></span>
+                  <span class="mlp-shape">(d × <strong>4d</strong>)</span>
+                </div>
+                <div class="mlp-layer__bar mlp-layer__bar--dense" data-i18n-title="denseBar">
+                  <div class="mlp-bar-label">d_ff = <strong>4d</strong></div>
+                </div>
+              </div>
+              <div class="mlp-act">↓ SiLU / ReLU</div>
+              <!-- Layer 2: Down-projection -->
+              <div class="mlp-layer">
+                <div class="mlp-layer__label" data-i18n="downProj">下投影</div>
+                <div class="mlp-layer__matrix">
+                  <span class="mlp-dim">h ∈ ℝ<sup>4d</sup></span>
+                  <span class="mlp-times">×</span>
+                  <span class="mlp-weight">W<sub>down</sub></span>
+                  <span class="mlp-shape">(<strong>4d</strong> × d)</span>
+                </div>
+                <div class="mlp-layer__bar mlp-layer__bar--dense">
+                  <div class="mlp-bar-label">→ y ∈ ℝ<sup>d</sup></div>
+                </div>
+              </div>
+              <div class="mlp-stats mlp-stats--dense">
+                <div><span data-i18n="params">参数</span>: 2 × d × 4d = <strong>8d²</strong></div>
+                <div>FLOPs: 2 × 8d² = <strong class="mlp-flops-val">16d²</strong></div>
+              </div>
+            </div>
+
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node--add" data-step="4">
+              <span class="flow-node__text">Add & Norm</span>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node--output" data-step="5">
+              <span class="flow-node__text">Output</span>
+            </div>
+          </div>
+          <div class="flow-timer" id="denseTimer">
+            <span data-i18n="computeTime">计算量</span>: <strong>16d²</strong> FLOPs
+          </div>
+        </div>
+
+        <!-- MOE Column -->
+        <div class="flow-col">
+          <div class="flow-col__title flow-col__title--moe" data-i18n="moeFlow">MOE 模型 (Top-2 / 8 Experts)</div>
+          <div class="flow-diagram" id="moeFlow">
+            <div class="flow-node flow-node--token" data-step="0">
+              <span class="flow-node__text">"cat" → x ∈ ℝ<sup>d</sup></span>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node--attn" data-step="1">
+              <span class="flow-node__text">Self-Attention</span>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node--add" data-step="2">
+              <span class="flow-node__text">Add & Norm</span>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node--router-box" data-step="3">
+              <span class="flow-node__text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Router: x · W<sub>g</sub> <small>(d × 8)</small></span>
+            </div>
+            <div class="flow-connector flow-connector--fan"></div>
+
+            <!-- MOE Expert Layer: 8 experts, only 2 active -->
+            <div class="flow-node flow-node--experts-detailed" data-step="4">
+              <span class="flow-node__label" data-i18n="expertLayer">专家层 — <span data-i18n="eachExpert">每个专家是一个独立的 MLP</span></span>
+
+              <div class="expert-detail-grid">
+                <!-- Active Expert -->
+                <div class="expert-detail expert-detail--active">
+                  <div class="expert-detail__head">E2 <small>w=0.6</small></div>
+                  <div class="mlp-layer mlp-layer--mini">
+                    <span class="mlp-weight-mini">W<sub>up</sub></span>
+                    <span class="mlp-shape-mini">(d × <strong>d/2</strong>)</span>
+                  </div>
+                  <div class="mlp-act-mini">SiLU</div>
+                  <div class="mlp-layer mlp-layer--mini">
+                    <span class="mlp-weight-mini">W<sub>down</sub></span>
+                    <span class="mlp-shape-mini">(<strong>d/2</strong> × d)</span>
+                  </div>
+                  <div class="expert-detail__bar expert-detail__bar--active"></div>
+                  <div class="expert-detail__dim">d_ff = <strong>d/2</strong></div>
+                </div>
+
+                <!-- Dimmed experts -->
+                <div class="expert-detail expert-detail--dim"><div class="expert-detail__head">E1</div><div class="expert-dim-placeholder">d/2</div></div>
+                <div class="expert-detail expert-detail--dim"><div class="expert-detail__head">E3</div><div class="expert-dim-placeholder">d/2</div></div>
+                <div class="expert-detail expert-detail--dim"><div class="expert-detail__head">E4</div><div class="expert-dim-placeholder">d/2</div></div>
+
+                <!-- Active Expert 2 -->
+                <div class="expert-detail expert-detail--active expert-detail--alt">
+                  <div class="expert-detail__head">E6 <small>w=0.4</small></div>
+                  <div class="mlp-layer mlp-layer--mini">
+                    <span class="mlp-weight-mini">W<sub>up</sub></span>
+                    <span class="mlp-shape-mini">(d × <strong>d/2</strong>)</span>
+                  </div>
+                  <div class="mlp-act-mini">SiLU</div>
+                  <div class="mlp-layer mlp-layer--mini">
+                    <span class="mlp-weight-mini">W<sub>down</sub></span>
+                    <span class="mlp-shape-mini">(<strong>d/2</strong> × d)</span>
+                  </div>
+                  <div class="expert-detail__bar expert-detail__bar--alt"></div>
+                  <div class="expert-detail__dim">d_ff = <strong>d/2</strong></div>
+                </div>
+
+                <div class="expert-detail expert-detail--dim"><div class="expert-detail__head">E5</div><div class="expert-dim-placeholder">d/2</div></div>
+                <div class="expert-detail expert-detail--dim"><div class="expert-detail__head">E7</div><div class="expert-dim-placeholder">d/2</div></div>
+                <div class="expert-detail expert-detail--dim"><div class="expert-detail__head">E8</div><div class="expert-dim-placeholder">d/2</div></div>
+              </div>
+
+              <div class="mlp-stats mlp-stats--moe">
+                <div><span data-i18n="perExpert">每个专家</span>: 2 × d × d/2 = <strong>d²</strong></div>
+                <div><span data-i18n="totalN">8 个专家合计</span>: 8 × d² = <strong>8d²</strong> <span data-i18n="sameAsDense">(= Dense)</span></div>
+                <div><span data-i18n="activeK">激活 Top-2</span>: 2 × d² = <strong>2d²</strong></div>
+                <div>FLOPs: 2 × 2d² = <strong class="mlp-flops-val mlp-flops-val--moe">4d²</strong></div>
+              </div>
+            </div>
+
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node--add" data-step="5">
+              <span class="flow-node__text">Σ 0.6·y₂ + 0.4·y₆</span>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node--output" data-step="6">
+              <span class="flow-node__text">Output</span>
+            </div>
+          </div>
+          <div class="flow-timer flow-timer--moe" id="moeTimer">
+            <span data-i18n="computeTime">计算量</span>: <strong>4d²</strong> FLOPs
+          </div>
+        </div>
+      </div>
+
+      <!-- FLOPs Comparison Bar -->
+      <div class="flops-compare">
+        <div class="flops-compare__title" data-i18n="flopCompare">MLP 层 FLOPs 对比（相同总参数量 8d²）</div>
+        <div class="flops-row">
+          <span class="flops-label">Dense</span>
+          <div class="flops-bar"><div class="flops-bar__fill flops-bar__fill--dense" style="width:100%"></div></div>
+          <span class="flops-val flops-val--dense">16d²</span>
+        </div>
+        <div class="flops-row">
+          <span class="flops-label">MOE</span>
+          <div class="flops-bar"><div class="flops-bar__fill flops-bar__fill--moe" style="width:25%"></div></div>
+          <span class="flops-val flops-val--moe">4d² <span data-i18n="savings4x">(节省 75%)</span></span>
+        </div>
+        <div class="flops-explain" data-i18n="flopsExplain">
+          Dense: 一个大 MLP，d_ff = 4d → 全部 8d² 参数都计算<br>
+          MOE: 8 个小 MLP，每个 d_ff = d/2 → 只算被选中的 2 个 = 2d²
+        </div>
+      </div>
+
+      <div class="insight-box" data-i18n="s3Insight">
+        <strong>关键：</strong>Dense 和 MOE 拥有完全相同的总参数量 (8d²)，但 MOE 把一个大 MLP 拆成 8 个小专家。每个 token 只经过 2 个专家的两层矩阵运算，<em>FLOPs 从 16d² 降到 4d²——节省 75% 计算量</em>。
+      </div>
+    </section>
+
+    <!-- ═══════════ Step 4: Envelope Math ═══════════ -->
+    <section class="section-card" id="step4" style="display:none;" aria-labelledby="s4Title">
+      <div class="section-card__header">
+        <div class="section-card__icon section-card__icon--emerald">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        </div>
+        <h2 class="section-card__title" id="s4Title" data-i18n="s4Title">信封背面的数学</h2>
+      </div>
+      <p class="section-card__desc" data-i18n="s4Desc">拖动滑块调整参数，实时观察 Dense 和 MOE 在计算量、参数量和内存上的差异。</p>
+
+      <div class="math-controls">
+        <div class="slider-group">
+          <label class="slider-label"><span>d<sub>model</sub></span><span class="slider-val" id="dModelVal">4096</span></label>
+          <input type="range" class="slider" id="dModelSlider" min="512" max="8192" step="512" value="4096">
+        </div>
+        <div class="slider-group">
+          <label class="slider-label"><span>d<sub>ff</sub> (per expert)</span><span class="slider-val" id="dFfVal">16384</span></label>
+          <input type="range" class="slider" id="dFfSlider" min="2048" max="32768" step="2048" value="16384">
+        </div>
+        <div class="slider-group">
+          <label class="slider-label"><span><span data-i18n="numExperts">专家数量</span> (N)</span><span class="slider-val" id="nExpertsVal">8</span></label>
+          <input type="range" class="slider" id="nExpertsSlider" min="2" max="64" step="2" value="8">
+        </div>
+        <div class="slider-group">
+          <label class="slider-label"><span>Top-K</span><span class="slider-val" id="topKVal">2</span></label>
+          <input type="range" class="slider" id="topKSlider" min="1" max="8" step="1" value="2">
+        </div>
+      </div>
+
+      <!-- Envelope Math Cards -->
+      <div class="math-grid">
+        <!-- Dense Card -->
+        <div class="math-card math-card--dense">
+          <div class="math-card__title" data-i18n="denseMath">Dense 等效模型</div>
+          <div class="math-card__subtitle" data-i18n="denseMathSub">(拥有同等参数量的单一 FFN)</div>
+          <div class="math-row">
+            <span class="math-label" data-i18n="ffnParams">FFN 参数量</span>
+            <span class="math-value" id="denseParams">—</span>
+          </div>
+          <div class="math-row">
+            <span class="math-label" data-i18n="flopsToken">FLOPs / token</span>
+            <span class="math-value" id="denseFlops">—</span>
+          </div>
+          <div class="math-row">
+            <span class="math-label" data-i18n="memFp16">内存 (FP16)</span>
+            <span class="math-value" id="denseMem">—</span>
+          </div>
+          <div class="math-formula">
+            <code>Params = N × 2 × d<sub>model</sub> × d<sub>ff</sub></code><br>
+            <code>FLOPs = 2 × Params</code>
+          </div>
+        </div>
+
+        <!-- MOE Card -->
+        <div class="math-card math-card--moe">
+          <div class="math-card__title" data-i18n="moeMath">MOE 模型</div>
+          <div class="math-card__subtitle" data-i18n="moeMathSub">(N 个专家，每次激活 Top-K 个)</div>
+          <div class="math-row">
+            <span class="math-label" data-i18n="totalParams">总参数量</span>
+            <span class="math-value" id="moeParamsTotal">—</span>
+          </div>
+          <div class="math-row">
+            <span class="math-label" data-i18n="activeParams">激活参数量</span>
+            <span class="math-value math-value--highlight" id="moeParamsActive">—</span>
+          </div>
+          <div class="math-row">
+            <span class="math-label" data-i18n="flopsToken">FLOPs / token</span>
+            <span class="math-value math-value--highlight" id="moeFlops">—</span>
+          </div>
+          <div class="math-row">
+            <span class="math-label" data-i18n="memFp16">内存 (FP16)</span>
+            <span class="math-value" id="moeMem">—</span>
+          </div>
+          <div class="math-formula">
+            <code>Params<sub>total</sub> = N × 2 × d<sub>model</sub> × d<sub>ff</sub></code><br>
+            <code>FLOPs = K × 2 × (2 × d<sub>model</sub> × d<sub>ff</sub>)</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Savings Summary -->
+      <div class="savings-box" id="savingsBox">
+        <div class="savings-row">
+          <span class="savings-icon">⚡</span>
+          <div class="savings-text">
+            <span data-i18n="computeSave">计算节省</span>
+            <strong id="computeSaving">—</strong>
+          </div>
+          <div class="savings-bar"><div class="savings-bar__fill savings-bar__fill--compute" id="computeBar"></div></div>
+        </div>
+        <div class="savings-row">
+          <span class="savings-icon">🧠</span>
+          <div class="savings-text">
+            <span data-i18n="capacityGain">容量增益</span>
+            <strong id="capacityGain">—</strong>
+          </div>
+          <div class="savings-bar"><div class="savings-bar__fill savings-bar__fill--capacity" id="capacityBar"></div></div>
+        </div>
+        <div class="savings-row">
+          <span class="savings-icon">💾</span>
+          <div class="savings-text">
+            <span data-i18n="memCost">内存代价</span>
+            <strong id="memCost">—</strong>
+          </div>
+          <div class="savings-bar"><div class="savings-bar__fill savings-bar__fill--mem" id="memBar"></div></div>
+        </div>
+      </div>
+
+      <!-- Real-world Examples -->
+      <div class="real-world">
+        <h3 class="real-world__title" data-i18n="realWorld">真实模型对比</h3>
+        <div class="real-world__grid">
+          <div class="rw-card">
+            <div class="rw-name">Mixtral 8×7B</div>
+            <div class="rw-stats">
+              <div><span data-i18n="total">总参</span> <strong>46.7B</strong></div>
+              <div><span data-i18n="active">激活</span> <strong>12.9B</strong></div>
+              <div><span data-i18n="ratio">比例</span> <strong>28%</strong></div>
+            </div>
+          </div>
+          <div class="rw-card">
+            <div class="rw-name">DeepSeek-V3</div>
+            <div class="rw-stats">
+              <div><span data-i18n="total">总参</span> <strong>671B</strong></div>
+              <div><span data-i18n="active">激活</span> <strong>37B</strong></div>
+              <div><span data-i18n="ratio">比例</span> <strong>5.5%</strong></div>
+            </div>
+          </div>
+          <div class="rw-card">
+            <div class="rw-name">Llama 4 Maverick</div>
+            <div class="rw-stats">
+              <div><span data-i18n="total">总参</span> <strong>400B</strong></div>
+              <div><span data-i18n="active">激活</span> <strong>17B</strong></div>
+              <div><span data-i18n="ratio">比例</span> <strong>4.3%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-box" data-i18n="s4Insight">
+        <strong>权衡：</strong>MOE 用更多的内存（需存储所有专家）换取更低的计算量（每次只算 K 个专家）。当模型规模越大，这种 trade-off 越划算——DeepSeek-V3 用 671B 参数实现了仅 37B 激活参数的推理速度。
+      </div>
+    </section>
+
+    <footer style="text-align:center; padding:var(--space-8) 0; color:var(--color-text-dim); font-size:var(--text-xs);">
+      <a href="../index.html" class="back-link">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        <span data-i18n="backHome">返回首页</span>
+      </a>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

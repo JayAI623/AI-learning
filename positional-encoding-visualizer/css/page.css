@@ -1,0 +1,258 @@
+/* ============================================================
+   Positional Encoding Visualizer — Page-specific Styles
+   ============================================================ */
+
+/* ---- Custom Tab Navigation ---- */
+.stage-tabs {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.stage-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.stage-tab:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.stage-tab.active {
+  background: var(--color-amber-soft);
+  color: var(--color-amber);
+  border-color: var(--color-amber);
+  box-shadow: 0 0 12px var(--color-amber-glow);
+}
+
+.sentence-input {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  width: 250px;
+  outline: none;
+  transition: border-color var(--duration-fast);
+}
+
+.sentence-input:focus {
+  border-color: var(--color-amber);
+  box-shadow: 0 0 0 2px var(--color-amber-soft);
+}
+
+/* ---- Canvas Areas ---- */
+.canvas-area {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-border);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+/* ---- Stage 0: Floating Tokens ---- */
+.floating-token {
+  position: absolute;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg-surface);
+  border: 2px solid var(--color-cyan);
+  border-radius: var(--radius-lg);
+  color: var(--color-cyan);
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-lg);
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+  will-change: transform;
+}
+
+/* ---- Stage 1: Absolute PE (Clocks) ---- */
+#canvas-1 {
+  flex-direction: column;
+  padding: var(--space-8);
+  gap: var(--space-8);
+  min-height: auto;
+}
+
+.tokens-row, .clocks-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.abs-token-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.abs-token {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg-surface);
+  border: 2px solid var(--color-text-dim);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-weight: var(--weight-semibold);
+}
+
+.clock-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.clock-svg {
+  width: 48px;
+  height: 48px;
+}
+
+.clock-face {
+  fill: var(--color-bg-surface);
+  stroke: var(--color-border);
+  stroke-width: 2;
+}
+
+.clock-hand {
+  stroke: var(--color-rose);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: transform 0.5s var(--ease-spring);
+  transform-origin: center;
+}
+
+.clock-center {
+  fill: var(--color-rose);
+}
+
+.clock-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: var(--color-text-muted);
+  text-anchor: middle;
+}
+
+/* ---- Stage 2: RoPE ---- */
+.rope-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.slider-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+input[type=range] {
+  flex-grow: 1;
+  max-width: 300px;
+  accent-color: var(--color-amber);
+}
+
+#rope-compass-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.compass-svg {
+  max-width: 500px;
+  max-height: 500px;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.compass-circle {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+}
+
+.compass-axis {
+  stroke: var(--color-border-subtle);
+  stroke-width: 1;
+}
+
+.rope-vector {
+  stroke-width: 2;
+  stroke-linecap: round;
+  transition: transform 0.3s linear;
+  transform-origin: 0 0;
+}
+
+.rope-token-bg {
+  fill: var(--color-bg-surface);
+  stroke-width: 1;
+  rx: 4;
+}
+
+.rope-token-text {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: var(--weight-bold);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.rope-angle-arc {
+  fill: var(--color-amber-soft);
+  stroke: var(--color-amber);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.rope-angle-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  fill: var(--color-amber);
+  font-weight: var(--weight-bold);
+  text-anchor: middle;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .step-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .stage-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .sentence-input {
+    width: 100%;
+  }
+  .tokens-row {
+    flex-wrap: wrap;
+  }
+}

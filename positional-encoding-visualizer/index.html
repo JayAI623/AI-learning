@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Positional Encoding Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../common/css/tokens.css">
+  <link rel="stylesheet" href="../common/css/page.css">
+  <link rel="stylesheet" href="css/page.css">
+</head>
+<body>
+  <div class="page">
+    <!-- Back Link -->
+    <a href="../index.html" class="back-link" aria-label="Back to home">
+      <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      <span data-i18n="back">返回</span>
+    </a>
+
+    <!-- Header -->
+    <header class="page-header">
+      <h1 class="page-title" data-i18n="title">位置编码 (Positional Encoding)</h1>
+      <p class="page-subtitle" data-i18n="subtitle">探索大语言模型如何理解词语的先后顺序：从“词袋模型”到“绝对位置”，再到现代的“旋转罗盘 (RoPE)”。</p>
+    </header>
+
+    <!-- Navigation / Input Control -->
+    <nav class="step-nav" aria-label="Stage navigation">
+      <div class="step-nav__info stage-tabs">
+        <button class="stage-tab active" data-stage="0">1. 无位置编码 (No PE)</button>
+        <button class="stage-tab" data-stage="1">2. 绝对位置 (Absolute PE)</button>
+        <button class="stage-tab" data-stage="2">3. 旋转位置 (RoPE)</button>
+      </div>
+      <div class="step-nav__actions">
+        <input type="text" id="sentenceInput" class="sentence-input" value="The cat chased the mouse" placeholder="输入一句短英文或中文" />
+        <button class="lang-toggle" id="langToggle" aria-label="Toggle language">中文 / EN</button>
+      </div>
+    </nav>
+
+    <!-- Main Visualization Area -->
+    <div id="visContainer" class="vis-container">
+      
+      <!-- Stage 0: No PE -->
+      <section class="section-card stage-section active" id="stage-0">
+        <div class="section-card__header">
+          <div class="section-card__icon section-card__icon--rose">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+          </div>
+          <h2 class="section-card__title" data-i18n="stage0.title">失重的单词（词袋模型）</h2>
+        </div>
+        <p class="section-card__desc" data-i18n="stage0.desc">在不加任何位置信息时，Transformer 的注意力机制同时看到所有词，它分不清 "cat chased mouse" 和 "mouse chased cat"。词就像台球一样随机漂浮，没有顺序概念。</p>
+        <div class="canvas-area" id="canvas-0">
+          <!-- Floating tokens rendered here -->
+        </div>
+      </section>
+
+      <!-- Stage 1: Absolute PE -->
+      <section class="section-card stage-section" id="stage-1" style="display: none;">
+        <div class="section-card__header">
+          <div class="section-card__icon section-card__icon--cyan">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          </div>
+          <h2 class="section-card__title" data-i18n="stage1.title">挂上时钟（绝对位置编码）</h2>
+        </div>
+        <p class="section-card__desc" data-i18n="stage1.desc">早期的 GPT 给每个词挂上一组转速不同的时钟。第1个词指向12点，越往后的词，指针转得越多。模型通过看这些“表”的组合，就能知道它在第几个位置。</p>
+        <div class="canvas-area" id="canvas-1">
+          <div class="tokens-row" id="abs-tokens-row"></div>
+          <div class="clocks-row" id="abs-clocks-row"></div>
+        </div>
+      </section>
+
+      <!-- Stage 2: RoPE -->
+      <section class="section-card stage-section" id="stage-2" style="display: none;">
+        <div class="section-card__header">
+          <div class="section-card__icon section-card__icon--amber">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          </div>
+          <h2 class="section-card__title" data-i18n="stage2.title">旋转罗盘（旋转位置编码 RoPE）</h2>
+        </div>
+        <p class="section-card__desc" data-i18n="stage2.desc">Llama 等现代大模型使用 RoPE。词被放在一个巨大的罗盘上旋转。拖动下方滑块平移整个句子，你会发现：虽然绝对角度变了，但词与词之间的<b>相对夹角永远保持不变</b>！相对距离才是语言理解的关键。</p>
+        
+        <div class="rope-controls">
+          <label class="slider-label">
+            <span data-i18n="stage2.slider">整体位置偏移 (Shift position)</span>: <span id="shift-value">0</span>
+          </label>
+          <input type="range" id="shift-slider" min="0" max="20" value="0" />
+        </div>
+
+        <div class="canvas-area rope-canvas-area" id="canvas-2">
+          <!-- Compass SVG rendered here -->
+          <div id="rope-compass-container"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Common Components -->
+  <script src="../common/js/i18n.js"></script>
+  <!-- Page Logic -->
+  <script src="js/app.js"></script>
+</body>
+</html>

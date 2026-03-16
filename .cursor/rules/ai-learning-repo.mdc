@@ -1,0 +1,41 @@
+---
+description: Git identity and push workflow for AI-learning repo (JayAI623 personal account)
+globs:
+alwaysApply: true
+---
+
+# AI-Learning Repo — Git & Push Rules
+
+## Git Identity
+
+This repo uses **local** git config for the personal account `JayAI623`.
+Do NOT change global git config when working in this repo.
+
+- `user.name` = JayAI623
+- `user.email` = (from ~/.gitconfig-personal)
+- `github.user` = JayAI623
+
+## Push via HTTPS (not SSH)
+
+The SSH key belongs to JayLiuMLP (work), so `git push origin` will fail.
+Always push using HTTPS with the JayAI623 token:
+
+```bash
+TOKEN=$(GITHUB_TOKEN= gh auth token)
+git push https://JayAI623:${TOKEN}@github.com/JayAI623/AI-learning.git <branch>
+```
+
+## gh CLI Commands
+
+Prefix with `GITHUB_TOKEN=` to use JayAI623's keyring auth:
+
+```bash
+GITHUB_TOKEN= gh pr create --repo JayAI623/AI-learning --base master ...
+GITHUB_TOKEN= gh pr list --repo JayAI623/AI-learning
+```
+
+## Project Conventions
+
+- Each visualizer: `<name>/index.html`, `<name>/css/page.css`, `<name>/js/app.js`
+- Shared styles/utils go in `common/`
+- Code and comments in English, respond to user in 中文

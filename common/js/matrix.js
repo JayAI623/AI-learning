@@ -189,7 +189,7 @@ class MatrixComponent {
   }
 
   _formatLabel(label) {
-    return formatNotation(label);
+    return label.replace(/\^(\w+)/g, '<sup>$1</sup>');
   }
 
   /* ---- Public API ---- */

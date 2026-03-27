@@ -22,24 +22,29 @@ Global config remains `JayLiuMLP` (work). Local config takes priority.
 
 ## Push Workflow
 
-SSH key is bound to `JayLiuMLP`, so pushing requires HTTPS with the JayAI623 token:
+Remote is configured as **HTTPS** and `gh auth setup-git` is set up to use `JayAI623` as the credential provider.
 
 ```bash
-# Get the JayAI623 token (must unset GITHUB_TOKEN to access keyring account)
-TOKEN=$(GITHUB_TOKEN= gh auth token)
-
-# Push via HTTPS
-git push https://JayAI623:${TOKEN}@github.com/JayAI623/AI-learning.git <branch>
+# Standard push (works as long as GITHUB_TOKEN env var is not set)
+unset GITHUB_TOKEN
+git push origin master
 ```
 
-**Do NOT use `git push origin`** — the SSH remote will be rejected because the SSH key belongs to JayLiuMLP.
+If `GITHUB_TOKEN` is set in the environment (e.g. from work session), unset it first — otherwise git will authenticate as `JayLiuMLP` and be rejected.
+
+If `gh` active account has drifted, switch it back:
+
+```bash
+unset GITHUB_TOKEN
+gh auth switch --user JayAI623
+git push origin master
+```
 
 ## Creating PRs
 
-Use `GITHUB_TOKEN=` prefix so `gh` uses the JayAI623 keyring auth instead of the work GITHUB_TOKEN:
-
 ```bash
-GITHUB_TOKEN= gh pr create --repo JayAI623/AI-learning --base master ...
+unset GITHUB_TOKEN
+gh pr create --repo JayAI623/AI-learning --base master ...
 ```
 
 ## Project Structure

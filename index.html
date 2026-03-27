@@ -19,6 +19,42 @@
       padding: var(--space-6);
     }
 
+    .lang-toggle {
+      position: fixed;
+      top: var(--space-6);
+      right: var(--space-6);
+      display: flex;
+      gap: 2px;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      z-index: 100;
+    }
+
+    .lang-btn {
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease-out);
+      letter-spacing: var(--tracking-wide);
+    }
+
+    .lang-btn.active {
+      background: var(--color-amber);
+      color: #000;
+    }
+
+    .lang-btn:hover:not(.active) {
+      color: var(--color-text-primary);
+    }
+
     .container {
       max-width: 900px;
       text-align: center;
@@ -93,17 +129,34 @@
       letter-spacing: var(--tracking-wide);
     }
 
+    /* Language visibility */
+    [data-lang] { display: none; }
+    html[lang="en"] [data-lang="en"] { display: inline; }
+    html[lang="en"] [data-lang="en"].block { display: block; }
+    html[lang="zh"] [data-lang="zh"] { display: inline; }
+    html[lang="zh"] [data-lang="zh"].block { display: block; }
   </style>
 </head>
 <body>
+
+  <!-- Language Toggle -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-zh" onclick="setLang('zh')">中</button>
+  </div>
+
   <div class="container">
-    <h1>Transformer Visualizers</h1>
+    <h1>
+      <span data-lang="en">Transformer Visualizers</span>
+      <span data-lang="zh">Transformer 可视化工具集</span>
+    </h1>
     <p class="subtitle">
-      Interactive educational tools for understanding Transformer architecture
-      and inference optimization techniques.
+      <span data-lang="en">Interactive educational tools for understanding Transformer architecture and inference optimization techniques.</span>
+      <span data-lang="zh">交互式教学工具，帮助你深入理解 Transformer 架构与推理优化技术。</span>
     </p>
 
     <div class="cards">
+
       <a href="attention-visualizer/index.html" class="card">
         <div class="card-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-amber)" stroke-width="1.5">
@@ -112,12 +165,18 @@
             <circle cx="12" cy="12" r="2" fill="var(--color-amber)"/>
           </svg>
         </div>
-        <div class="card-title">Attention Mechanism</div>
+        <div class="card-title">
+          <span data-lang="en">Attention Mechanism</span>
+          <span data-lang="zh">注意力机制</span>
+        </div>
         <p class="card-desc">
-          Step-by-step visualization of self-attention: embeddings, Q/K/V projections,
-          attention scores, and weighted outputs.
+          <span data-lang="en">Step-by-step visualization of self-attention: embeddings, Q/K/V projections, attention scores, and weighted outputs.</span>
+          <span data-lang="zh">逐步可视化自注意力机制：词嵌入、Q/K/V 投影、注意力分数与加权输出。</span>
         </p>
-        <span class="card-badge">Core Concept</span>
+        <span class="card-badge">
+          <span data-lang="en">Core Concept</span>
+          <span data-lang="zh">核心概念</span>
+        </span>
       </a>
 
       <a href="kv-cache-visualizer/index.html" class="card">
@@ -126,12 +185,18 @@
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="var(--color-cyan-soft)"/>
           </svg>
         </div>
-        <div class="card-title">KV Cache Optimization</div>
+        <div class="card-title">
+          <span data-lang="en">KV Cache Optimization</span>
+          <span data-lang="zh">KV 缓存优化</span>
+        </div>
         <p class="card-desc">
-          Understand how Key-Value caching accelerates autoregressive generation
-          by 10-100× through intelligent memoization.
+          <span data-lang="en">Understand how Key-Value caching accelerates autoregressive generation by 10-100× through intelligent memoization.</span>
+          <span data-lang="zh">了解键值缓存如何通过智能记忆化将自回归生成速度提升 10-100 倍。</span>
         </p>
-        <span class="card-badge">Inference Speedup</span>
+        <span class="card-badge">
+          <span data-lang="en">Inference Speedup</span>
+          <span data-lang="zh">推理加速</span>
+        </span>
       </a>
 
       <a href="moe-visualizer/index.html" class="card">
@@ -144,12 +209,18 @@
             <path d="M12 8v7M12 8l-7 7M12 8l7 7" stroke-linecap="round"/>
           </svg>
         </div>
-        <div class="card-title">Mixture of Experts</div>
+        <div class="card-title">
+          <span data-lang="en">Mixture of Experts</span>
+          <span data-lang="zh">混合专家模型</span>
+        </div>
         <p class="card-desc">
-          Interactive visualization of MOE architecture: routing, sparse activation,
-          and why MOE achieves more capacity with less compute.
+          <span data-lang="en">Interactive visualization of MOE architecture: routing, sparse activation, and why MOE achieves more capacity with less compute.</span>
+          <span data-lang="zh">MoE 架构交互可视化：路由机制、稀疏激活，以及如何以更少计算实现更大模型容量。</span>
         </p>
-        <span class="card-badge">Scaling Efficiency</span>
+        <span class="card-badge">
+          <span data-lang="en">Scaling Efficiency</span>
+          <span data-lang="zh">扩展效率</span>
+        </span>
       </a>
 
       <a href="positional-encoding-visualizer/index.html" class="card">
@@ -160,12 +231,18 @@
             <path d="M12 2a10 10 0 0 1 10 10" stroke="var(--color-rose-soft)" stroke-width="4" stroke-linecap="round"/>
           </svg>
         </div>
-        <div class="card-title">Positional Encoding</div>
+        <div class="card-title">
+          <span data-lang="en">Positional Encoding</span>
+          <span data-lang="zh">位置编码</span>
+        </div>
         <p class="card-desc">
-          Understand how models see word order: from Bag of Words to Absolute PE,
-          and modern Rotary Position Embedding (RoPE).
+          <span data-lang="en">Understand how models see word order: from Bag of Words to Absolute PE, and modern Rotary Position Embedding (RoPE).</span>
+          <span data-lang="zh">了解模型如何感知词序：从词袋模型到绝对位置编码，再到现代旋转位置编码（RoPE）。</span>
         </p>
-        <span class="card-badge">Core Concept</span>
+        <span class="card-badge">
+          <span data-lang="en">Core Concept</span>
+          <span data-lang="zh">核心概念</span>
+        </span>
       </a>
 
       <a href="gpt-architecture-visualizer/index.html" class="card">
@@ -176,15 +253,34 @@
             <rect x="17" y="4" width="4" height="16" rx="1.5" fill="var(--color-violet-soft)"/>
           </svg>
         </div>
-        <div class="card-title">GPT Architecture Explorer</div>
+        <div class="card-title">
+          <span data-lang="en">GPT Architecture Explorer</span>
+          <span data-lang="zh">GPT 架构探索</span>
+        </div>
         <p class="card-desc">
-          Interactive GPT block diagram with 2 explicit Transformer layers.
-          Hover each module to inspect matrix-level computation flow.
+          <span data-lang="en">Interactive GPT block diagram with 2 explicit Transformer layers. Hover each module to inspect matrix-level computation flow.</span>
+          <span data-lang="zh">含 2 个显式 Transformer 层的交互式 GPT 架构图，悬停各模块可查看矩阵级计算流程。</span>
         </p>
-        <span class="card-badge">Architecture Deep Dive</span>
+        <span class="card-badge">
+          <span data-lang="en">Architecture Deep Dive</span>
+          <span data-lang="zh">架构深度解析</span>
+        </span>
       </a>
-    </div>
 
+    </div>
   </div>
+
+  <script>
+    function setLang(lang) {
+      document.documentElement.lang = lang;
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+      localStorage.setItem('preferred-lang', lang);
+    }
+
+    // Restore preference on load
+    const saved = localStorage.getItem('preferred-lang');
+    if (saved) setLang(saved);
+  </script>
 </body>
 </html>

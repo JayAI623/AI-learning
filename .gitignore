@@ -13,3 +13,6 @@ __pycache__/
 
 # Claude / Cursor skills cache
 .claude/plugins/cache/
+
+# Local Claude instructions (not for remote)
+CLAUDE.md
